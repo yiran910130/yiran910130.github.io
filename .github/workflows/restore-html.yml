@@ -1,0 +1,20 @@
+name: Restore website HTML
+on:
+  push:
+    paths:
+      - '.github/workflows/restore-html.yml'
+permissions:
+  contents: write
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Convert escaped markup back to HTML
+        run: |
+          python -c "from html import unescape; from pathlib import Path; [p.write_text(unescape(p.read_text(encoding='utf-8')), encoding='utf-8') for p in [Path('index.html'), Path('publications.html')]]"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html publications.html
+          git commit -m "Restore renderable HTML" || exit 0
+          git push
