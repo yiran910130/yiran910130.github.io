@@ -25,10 +25,10 @@ jobs:
               p = Path(name)
               p.parent.mkdir(parents=True, exist_ok=True)
               p.write_bytes(base64.b64decode(encoded))
-          Path('.nojekyll').touch()
+ Path('.nojekyll').touch()
           PY
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+ git config user.name "github-actions[bot]"
+ git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .nojekyll assets/favicon.svg data/publications.bib robots.txt sitemap.xml
-          git commit -m "Add favicon, BibTeX, and site discovery files" || exit 0
+ git commit -m "Add favicon, BibTeX, and site discovery files" || exit 0
           git push
