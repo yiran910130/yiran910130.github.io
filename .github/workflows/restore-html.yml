@@ -1,4 +1,4 @@
-name: Restore website HTML
+name: Complete website resources
 on:
   push:
     paths:
@@ -6,15 +6,29 @@ on:
 permissions:
   contents: write
 jobs:
-  restore:
+  resources:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Convert escaped markup back to HTML
+      - name: Add public academic site resources
         run: |
-          python -c "from html import unescape; from pathlib import Path; [p.write_text(unescape(p.read_text(encoding='utf-8')), encoding='utf-8') for p in [Path('index.html'), Path('publications.html')]]"
+          python - &lt;&lt;'PY'
+          import base64
+          from pathlib import Path
+          files = {
+              'assets/favicon.svg': 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTIiIGZpbGw9IiMwYjFlMzUiLz48dGV4dCB4PSIxMCIgeT0iNDMiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLHNlcmlmIiBmb250LXNpemU9IjMzIiBmaWxsPSIjZjJmYWZiIiBmb250LXdlaWdodD0iYm9sZCI+Ulk8L3RleHQ+PGNpcmNsZSBjeD0iNTYiIGN5PSI0NyIgcj0iNCIgZmlsbD0iIzE1YjZiZCIvPjwvc3ZnPg==',
+              'data/publications.bib': 'QGJvb2t7eWkyMDI2YWxnb3JpdGhtaWNsLAogIGF1dGhvcj17WWksIFJhbiBhbmQgTGksIFouIGFuZCBaaGFuZywgVy59LAogIHRpdGxlPXtBbGdvcml0aG1pYyBGYWlybmVzcyBpbiBBSS1NZWRpYXRlZCBJbnN0aXR1dGlvbmFsIENvbW11bmljYXRpb246IEEgQ29tcHV0YXRpb25hbCBGcmFtZXdvcmsgZm9yIE11bHRpbGlxdWFsIFByb2Zlc3Npb25hbCBJbnRlcmFjdGlvbn0sCiAgeWVhcj17MjAyNn0sCiAgcHVibGlzaGVyPXtTcHJpbmdlciBOYXR1cmV9LAogIGRvaT17MTAuMTAwNy85NzgtMy0wMzItMjg2NTgtMX0KfQpAYXJ0aWNsZXt5aTIwMjZsaW5ndWlzdGljanVzdGljZSwKICBhdXRob3I9e1lpLCBSYW59LAogIHRpdGxlPXtBZHZhbmNpbmcgbGluZ3Vpc3RpYyBqdXN0aWNlIGluIGNvdXJ0cm9vbSBpbnRlcnByZXRpbmc6IEEgZGlnaXRhbCBodW1hbml0aWVzIGFwcHJvYWNoIHRvIGludGVycHJldGVyLW1lZGlhdGVkIGNvbW11bmljYXRpb259LAogIGpvdXJuYWw9e0xhbmd1YWdlIGFuZCBDb21tdW5pY2F0aW9ufSwKICB2b2x1bWU9ezEwN30sCiAgcGFnZXM9ezEwOC0tMTI2fSwKICB5ZWFyPXsyMDI2fSwKICBkb2k9ezEwLjEwMTYvai5sYW5nY29tLjIwMjYuMDEuMDA5fQp9CkBhcnRpY2xle3lpMjAyNXRlY2hlbXBvd2VyZWQsCiAgYXV0aG9yPXtZaSwgUmFufSwKICB0aXRsZT17VGVjaC1lbXBvd2VyZWQgZXF1aXR5OiBhZHZhbmNpbmcgbGluZ3Vpc3RpYyBqdXN0aWNlIHRocm91Z2ggZGlnaXRhbCBzY2hvbGFyc2hpcH0sCiAgam91cm5hbD17RGlnaXRhbCBTY2hvbGFyc2hpcCBpbiB0aGUgSHVtYW5pdGllc30sCiAgdm9sdW1lPXs0MH0sCiAgcGFnZXM9ezM4MS0tMzk5fSwKICB5ZWFyPXsyMDI1fSwKICBkb2k9ezEwLjEwOTMvbGxjL2ZxYWYwMDd9Cn0K',
+              'robots.txt': 'VXNlci1hZ2VudDogKgpBbGxvdzogLwpTaXRlbWFwOiBodHRwczovL3lpcmFuOTEwMTMwLmdpdGh1Yi5pby9zaXRlbWFwLnhtbAo=',
+              'sitemap.xml': 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHVybHNldCB4bWxucz0iaHR0cDovL3d3dy5zaXRlbWFwcy5vcmcvc2NoZW1hcy9zaXRlbWFwLzAuOSI+Cjx1cmw+PGxvYz5odHRwczovL3lpcmFuOTEwMTMwLmdpdGh1Yi5pby88L2xvYz48L3VybD4KPHVybD48bG9jPmh0dHBzOi8veWlyYW45MTAxMzAuZ2l0aHViLmlvL3B1YmxpY2F0aW9ucy5odG1sPC9sb2M+PC91cmw+CjwvdXJsc2V0Pgo='
+          }
+          for name, encoded in files.items():
+              p = Path(name)
+              p.parent.mkdir(parents=True, exist_ok=True)
+              p.write_bytes(base64.b64decode(encoded))
+          Path('.nojekyll').touch()
+          PY
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html publications.html
-          git commit -m "Restore renderable HTML" || exit 0
+          git add .nojekyll assets/favicon.svg data/publications.bib robots.txt sitemap.xml
+          git commit -m "Add favicon, BibTeX, and site discovery files" || exit 0
           git push
